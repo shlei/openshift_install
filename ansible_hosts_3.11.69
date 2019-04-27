@@ -1,0 +1,60 @@
+[OSEv3:children]
+masters
+nodes
+etcd
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+# SSH user, this user should allow ssh based auth without requiring a password
+ansible_ssh_user=root
+ansible_become=true
+
+# If ansible_ssh_user is not root, ansible_become must be set to true
+#ansible_become=true
+
+openshift_deployment_type=openshift-enterprise
+
+# uncomment the following to enable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
+
+os_firewall_use_firewalld=true
+os_sdn_network_plugin_name=redhat/openshift-ovs-multitenant
+
+openshift_image_tag=v3.11
+
+oreg_url=registry.redhat.ren/openshift3/ose-${component}:${version}
+openshift_examples_modify_imagestreams=true
+oreg_auth_user=admin
+oreg_auth_password=Harbor123
+
+#openshift_cluster_monitoring_operator_install=false
+#openshift_console_install=false
+#openshift_web_console_install=false
+#openshift_enable_service_catalog=false
+
+openshift_service_catalog_image_prefix=registry.redhat.ren/openshift3/ose-
+openshift_service_catalog_image_version=v3.11
+
+openshift_master_default_subdomain=apps.mec.cmcc
+openshift_metrics_install_metrics=true
+
+openshift_master_api_port=8443
+openshift_master_console_port=8443
+
+openshift_web_console_install=true
+openshift_web_console_prefix=registry.redhat.ren/openshift3/ose-
+
+# host group for masters
+[masters]
+master.mec.cmcc
+
+# host group for etcd
+[etcd]
+master.mec.cmcc
+
+# host group for nodes, includes region info
+[nodes]
+master.mec.cmcc openshift_node_group_name='node-config-master'
+infra.mec.cmcc openshift_node_group_name='node-config-infra'
+node1.mec.cmcc openshift_node_group_name='node-config-compute'
+node2.mec.cmcc openshift_node_group_name='node-config-compute'
