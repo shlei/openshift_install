@@ -1,7 +1,6 @@
 openshift 安装
 
 参考：
-
 https://docs.openshift.com/container-platform/3.11/install/disconnected_install.html
 http://ksoong.org/docs/content/openshift/install/
 
@@ -9,13 +8,11 @@ http://ksoong.org/docs/content/openshift/install/
 
 1. 操作系统安装。安装版本CentOS7-1804
 
-2. 设备规划 
+2. 设备规划: 
+
 192.168.39.124  master   master.mec.cmcc
-
 192.168.39.125  infra    infra.mec.cmcc
-
 192.168.39.126  node1    node1.mec.cmcc
-
 192.168.39.127  node2    node2.mec.cmcc
 
 #192.168.39.128  storage storage.mec.cmcc dns
@@ -35,7 +32,7 @@ yum repolist
 4. linux hosts文件配置(/etc/host)  [master]
 添加：
 192.168.39.124  master.mec.cmcc   master
-192.168.39.125  infra.mec.cmcc       infra
+192.168.39.125  infra.mec.cmcc    infra
 192.168.39.126  node1.mec.cmcc    node1
 192.168.39.127  node2.mec.cmcc    node2
 #192.168.39.128  storage.mec.cmcc  storage
