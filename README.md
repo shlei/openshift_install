@@ -1,7 +1,9 @@
 openshift 安装
 
 参考：
+
 https://docs.openshift.com/container-platform/3.11/install/disconnected_install.html
+
 http://ksoong.org/docs/content/openshift/install/
 
 安装版本3.11.69过程：
@@ -25,7 +27,9 @@ http://ksoong.org/docs/content/openshift/install/
 192.168.39.129 registry.redhat.ren （已有）
 
 3. 修改yum源 [master]
+
 [ftp]
+
 baseurl=ftp://192.168.39.135/data
 
 gpgcheck=0
@@ -87,9 +91,13 @@ yum -y install openshift-ansible
 
 [nodes]
 192.168.39.124
+
 192.168.39.125
+
 192.168.39.126
+
 192.168.39.127
+
 #192.168.39.128
 
 7. 配置ssh免密登录 (root/cmcc@123) [master]
@@ -97,15 +105,23 @@ yum -y install openshift-ansible
 ssh-keygen
 
 ssh-copy-id   master.mec.cmcc
+
 ssh-copy-id   infra.mec.cmcc
+
 ssh-copy-id   node1.mec.cmcc
+
 ssh-copy-id   node2.mec.cmcc
+
 #ssh-copy-id   storage.mec.cmcc
 
 (ssh-copy-id  192.168.39.124
+
 ssh-copy-id  192.168.39.125
+
 ssh-copy-id  192.168.39.126
+
 ssh-copy-id  192.168.39.127
+
 ssh-copy-id  192.168.39.128)
 
 8.1 将修改的yum源文件通过ansible拷贝到所有设备 [master]
@@ -120,6 +136,7 @@ ansible nodes -m raw -a "mv C* /etc/yum.repos.d/bak/"
 8.3 执行命令检查yum源是否正确
 
 ansible nodes -m raw -a "yum clean all"
+
 ansible nodes -m raw -a "yum repolist"
 
 9. 将etc/hosts文件拷贝到其他节点上 【master】
@@ -141,6 +158,7 @@ ansible nodes -m raw -a "yum -y install wget git net-tools bind-utils iptables-s
 在/etc/sysconfig/docker中添加
 
 INSECURE_REGISTRY='--insecure-registry registry.redhat.ren'
+
 INSECURE_REGISTRY='--insecure-registry 192.168.39.129'
 
 11.2 通过ansible 将docker配置文件拷贝到其他节点
@@ -150,11 +168,13 @@ ansible nodes -m copy -a "src=/etc/sysconfig/docker dest=/etc/sysconfig/ backup=
 11.3  docker启动
 
 ansible nodes -m raw -a "systemctl enable docker"
+
 ansible nodes -m raw -a "systemctl start docker"
 
 测试docker：
 
 ansible nodes -m raw -a "docker pull registry.redhat.ren/shilei/nginx:latest"
+
 ansible nodes -m raw -a "docker images"
 
 12.  重启系统
@@ -170,19 +190,27 @@ yum -y install dnsmasq
 在/etc/dnsmasq.d/openshift-cluster.conf下添加：
 
 local=/mec.cmcc/
+
 address=/.apps.mec.cmcc/192.168.39.125
+
 address=/master.mec.cmcc/192.168.39.124
+
 address=/infra.mec.cmcc/192.168.39.125
+
 address=/node1.mec.cmcc/192.168.39.126
+
 address=/node2.mec.cmcc/192.168.39.127
 
 systemctl enable dnsmasq
+
 systemctl start dnsmasq
 
 firewall-cmd --permanent --add-service=dns
+
 firewall-cmd --reload
 
 13.3 配置dns 【nodes】
+
 ansible nodes -m raw -a "nmcli connection modify eno2 ipv4.dns 192.168.39.128"
 
 13. 新建ansible hosts配置文件。
