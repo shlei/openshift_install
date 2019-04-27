@@ -1,6 +1,7 @@
 openshift 安装
 
 参考：
+
 https://docs.openshift.com/container-platform/3.11/install/disconnected_install.html
 http://ksoong.org/docs/content/openshift/install/
 
