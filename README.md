@@ -11,10 +11,14 @@ http://ksoong.org/docs/content/openshift/install/
 
 2. 设备规划 
 192.168.39.124  master   master.mec.cmcc
-192.168.39.125  infra       infra.mec.cmcc
+
+192.168.39.125  infra    infra.mec.cmcc
+
 192.168.39.126  node1    node1.mec.cmcc
+
 192.168.39.127  node2    node2.mec.cmcc
-#192.168.39.128  storage  storage.mec.cmcc dns
+
+#192.168.39.128  storage storage.mec.cmcc dns
 
 192.168.39.135 yum （已有）
 192.168.39.129 registry.redhat.ren （已有）
