@@ -81,9 +81,14 @@ hostnamectl set-hostname node2.mec.cmcc
 
 6.1 安装openshift-ansible [master]  使用ansible 2.6
 
+(3.11.98 使用ansible版本：ansible-2.6.16-1.el7ae)
+
 yum -y install ansible-2.6.13-1.el7ae
 
 yum -y install openshift-ansible
+
+降级ansible版本：
+yum downgrade ansible-2.6.16-1.el7ae
 
 6. 2 配置ansible hosts文件 [master]
 
