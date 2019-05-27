@@ -1,0 +1,66 @@
+一. 安装
+1. 在线安装：
+
+2. 离线安装：
+
+二. 配置
+参考：
+https://github.com/goharbor/harbor/blob/master/docs/configure_https.md
+
+CA：
+
+ openssl genrsa -out ca.key 4096
+ 
+ openssl req -x509 -new -nodes -sha512 -days 3650 \
+    -subj "/C=CN/ST=GD/L=SZ/O=Global Security/OU=IT Department/CN=*.registry.mec.cmcc" \
+    -key ca.key \
+    -out ca.crt
+	
+ openssl genrsa -out registry.mec.cmcc.key 4096
+ 
+ openssl req -sha512 -new \
+    -subj "/C=CN/ST=GD/L=SZ/O=Global Security/OU=IT Department/CN=*.registry.mec.cmcc" \
+    -key registry.mec.cmcc.key \
+    -out registry.mec.cmcc.csr
+	
+ cat > v3.ext <<-EOF
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth 
+subjectAltName = @alt_names
+[alt_names]
+DNS.1=registry.mec.cmcc
+EOF
+
+openssl x509 -req -sha512 -days 3650 \
+    -extfile v3.ext \
+    -CA ca.crt -CAkey ca.key -CAcreateserial \
+    -in registry.mec.cmcc.csr \
+    -out registry.mec.cmcc.crt
+	
+openssl x509 -inform PEM -in registry.mec.cmcc.crt -out registry.mec.cmcc.cert
+
+=========================
+harbor:
+  cp registry.mec.cmcc.crt /data/cert/
+  cp registry.mec.cmcc..key /data/cert/ 
+
+  harbor.conf 修改：
+  hostname = registry.mec.cmcc
+  ui_url_protocol = https
+  ssl_cert = /data/cert/registry.mec.cmcc.crt
+  ssl_cert_key = /data/cert/registry.mec.cmcc.key
+
+  ./prepare
+  docker-compose down -v
+  docker-compose up -d
+
+docker:
+  cp registry.mec.cmcc.cert /etc/docker/certs.d/registry.mec.cmcc/
+  cp registry.mec.cmcc.key /etc/docker/certs.d/registry.mec.cmcc/
+  cp ca.crt /etc/docker/certs.d/registry.mec.cmcc/
+
+##Troubleshooting
+cp registry.mec.cmcc.crt /etc/pki/ca-trust/source/anchors/registry.mec.cmcc.crt
+update-ca-trust
